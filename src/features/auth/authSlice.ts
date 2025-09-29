@@ -25,11 +25,12 @@ export const login = createAsyncThunk<
   try {
     const data = await loginApi(credentials);
     // Save email for dynamic user lookup if needed
-   if (credentials.remember) {
+    if (credentials.remember) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("email", credentials.email);
     } else {
       sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("email", credentials.email);
     }
     return data.token;
   } catch (err: any) {

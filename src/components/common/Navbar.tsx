@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect} from "react";
 import { Row, Col, Button, Space, Typography, Avatar } from "antd";
 import { LogoutOutlined, UserOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,16 +12,17 @@ const Navbar: React.FC = () => {
   const { users } = useSelector((state: RootState) => state.users);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+    const [emailId, setEmailId] = useState<string | null>(null);
+     useEffect(() => {
+    // Get email from localStorage or sessionStorage dynamically
+    setEmailId(localStorage.getItem("email") || sessionStorage.getItem("email"));
+  }, []); // Runs once on mount
 
-  const emailId = useMemo(
-    () => localStorage.getItem("email") || sessionStorage.getItem("email"),
-    []
-  );
+  const currentUser = useMemo(() => {
+    if (!emailId) return null;
+    return users.find((user) => user.email === emailId) || null;
+  }, [users, emailId]);
 
-  const currentUser = useMemo(
-    () => users.find((user) => user.email === emailId),
-    [users, emailId]
-  );
 
   const handleLogout = () => {
     dispatch(clearAuth());
